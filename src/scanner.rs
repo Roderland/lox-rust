@@ -219,12 +219,12 @@ impl Scanner {
             .iter()
             .collect::<String>();
         self.tokens
-            .push(Token::new(typ, lexeme, literal, self.line));
+            .push(Token::new(typ, &lexeme, literal, self.line));
     }
 
     fn add_token_eof(&mut self) {
         self.tokens
-            .push(Token::new(TokenType::Eof, "".to_string(), None, self.line));
+            .push(Token::new(TokenType::Eof, "", None, self.line));
     }
 
     fn is_digit(ch: Option<char>) -> bool {

@@ -1,6 +1,7 @@
 mod error;
 mod scanner;
 mod token;
+mod expr;
 
 use crate::error::LoxError;
 use crate::scanner::Scanner;

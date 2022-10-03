@@ -3,16 +3,16 @@ use std::fmt::{self, Formatter};
 #[derive(Debug)]
 pub struct Token {
     typ: TokenType,
-    lexeme: String,
+    pub lexeme: String,
     literal: Option<Object>,
     line: usize,
 }
 
 impl Token {
-    pub fn new(typ: TokenType, lexeme: String, literal: Option<Object>, line: usize) -> Token {
+    pub fn new(typ: TokenType, lexeme: &str, literal: Option<Object>, line: usize) -> Token {
         Token {
             typ,
-            lexeme,
+            lexeme: lexeme.to_string(),
             literal,
             line,
         }
