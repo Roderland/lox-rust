@@ -10,7 +10,12 @@ pub struct Token {
 
 impl Token {
     pub fn new(typ: TokenType, lexeme: String, literal: Option<Object>, line: usize) -> Token {
-        Token { typ, lexeme, literal, line }
+        Token {
+            typ,
+            lexeme,
+            literal,
+            line,
+        }
     }
 }
 
@@ -91,5 +96,5 @@ pub enum TokenType {
     True,
     Var,
     While,
-    Eof
+    Eof,
 }
