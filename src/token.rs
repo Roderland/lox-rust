@@ -1,15 +1,15 @@
 use std::fmt::{self, Formatter};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Token {
-    typ: TokenType,
+    pub typ: TokenType,
     pub lexeme: String,
-    literal: Option<Object>,
-    line: usize,
+    pub literal: Option<Object>,
+    pub line: usize,
 }
 
 impl Token {
-    pub fn new(typ: TokenType, lexeme: &str, literal: Option<Object>, line: usize) -> Token {
+    pub fn new(typ: TokenType, lexeme: &str, literal: Option<Object>, line: usize) -> Self {
         Token {
             typ,
             lexeme: lexeme.to_string(),
@@ -35,7 +35,7 @@ impl fmt::Display for Token {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Object {
     Num(f64),
     Str(String),
@@ -56,7 +56,7 @@ impl fmt::Display for Object {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum TokenType {
     LeftParen,
     RightParen,

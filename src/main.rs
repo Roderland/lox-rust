@@ -2,12 +2,14 @@ mod error;
 mod scanner;
 mod token;
 mod expr;
+mod parser;
 
 use crate::error::LoxError;
 use crate::scanner::Scanner;
 use std::env::args;
 use std::fs::File;
 use std::io::{self, stdout, BufRead, BufReader, Read, Write};
+use crate::parser::Parser;
 
 pub fn main() {
     let args: Vec<String> = args().collect();
@@ -63,8 +65,9 @@ fn run(source: &[u8]) -> Result<(), LoxError> {
     let mut scanner = Scanner::new(source);
     let tokens = scanner.scan_tokens()?;
 
-    for token in tokens {
-        println!("{:?}", token);
+    let mut parser = Parser::new(tokens.clone());
+    if let Some(expr) = parser.parse() {
+        println!("{}", expr.to_string());
     }
 
     Ok(())

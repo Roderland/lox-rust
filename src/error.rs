@@ -5,10 +5,12 @@ pub struct LoxError {
 
 impl LoxError {
     pub fn error(line: usize, message: String) -> LoxError {
-        LoxError { line, message }
+        let error = LoxError { line, message };
+        error.report("");
+        error
     }
 
-    pub fn report(&self, loc: String) {
+    pub fn report(&self, loc: &str) {
         eprintln!("[line {}] Error{}: {}", self.line, loc, self.message);
     }
 }

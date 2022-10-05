@@ -1,14 +1,24 @@
 use crate::token::*;
 
-trait Expr {
+pub trait Expr {
     fn eval(&self) -> Object;
     fn to_string(&self) -> String;
 }
 
-struct BinaryExpr {
+pub struct BinaryExpr {
     left: Box<dyn Expr>,
     operator: Token,
     right: Box<dyn Expr>,
+}
+
+impl BinaryExpr {
+    pub fn new(left: Box<dyn Expr>, operator: Token, right: Box<dyn Expr>) -> Box<Self> {
+        return Box::new(BinaryExpr {
+            left,
+            operator,
+            right
+        });
+    }
 }
 
 impl Expr for BinaryExpr {
@@ -23,8 +33,14 @@ impl Expr for BinaryExpr {
     }
 }
 
-struct GroupingExpr {
+pub struct GroupingExpr {
     expression: Box<dyn Expr>,
+}
+
+impl GroupingExpr {
+    pub fn new(expression: Box<dyn Expr>) -> Box<Self> {
+        Box::new(GroupingExpr { expression })
+    }
 }
 
 impl Expr for GroupingExpr {
@@ -37,8 +53,14 @@ impl Expr for GroupingExpr {
     }
 }
 
-struct LiteralExpr {
+pub struct LiteralExpr {
     value: Object,
+}
+
+impl LiteralExpr {
+    pub fn new(value: Object) -> Box<Self> {
+        Box::new(LiteralExpr { value })
+    }
 }
 
 impl Expr for LiteralExpr {
@@ -51,9 +73,15 @@ impl Expr for LiteralExpr {
     }
 }
 
-struct UnaryExpr {
+pub struct UnaryExpr {
     operator: Token,
     right: Box<dyn Expr>,
+}
+
+impl UnaryExpr {
+    pub fn new(operator: Token, right: Box<dyn Expr>) -> Box<Self> {
+        return Box::new(UnaryExpr { operator, right })
+    }
 }
 
 impl Expr for UnaryExpr {

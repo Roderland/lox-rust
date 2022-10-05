@@ -10,7 +10,7 @@ pub struct Scanner {
 }
 
 impl Scanner {
-    pub fn new(source: Vec<char>) -> Scanner {
+    pub fn new(source: Vec<char>) -> Self {
         Scanner {
             source,
             tokens: Vec::new(),
@@ -27,7 +27,7 @@ impl Scanner {
             match self.scan_token() {
                 Ok(_) => {}
                 Err(e) => {
-                    e.report("".to_string());
+                    e.report("");
                     had_error = Some(e);
                 }
             }
