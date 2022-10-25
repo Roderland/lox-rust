@@ -1,8 +1,8 @@
 
 use crate::token::{Token, TokenType};
 use crate::expr::*;
-use crate::LoxError;
-use crate::token::Object;
+use crate::SyntaxError;
+use crate::object::Object;
 use crate::token::TokenType::*;
 
 pub struct Parser {
@@ -15,15 +15,15 @@ impl Parser {
         Parser { tokens, current: 0 }
     }
 
-    pub fn parse(&mut self) -> Option<Box<dyn Expr>> {
-        return self.expression().ok();
+    pub fn parse(&mut self) -> Result<Box<dyn Expr>, SyntaxError> {
+        return self.expression();
     }
 
-    fn expression(&mut self) -> Result<Box<dyn Expr>, LoxError> {
+    fn expression(&mut self) -> Result<Box<dyn Expr>, SyntaxError> {
         return self.equality();
     }
 
-    fn equality(&mut self) -> Result<Box<dyn Expr>, LoxError> {
+    fn equality(&mut self) -> Result<Box<dyn Expr>, SyntaxError> {
         let left = self.comparison()?;
 
         while self.try_match(&[BangEqual, EqualEqual]) {
@@ -35,7 +35,7 @@ impl Parser {
         Ok(left)
     }
 
-    fn comparison(&mut self) -> Result<Box<dyn Expr>, LoxError> {
+    fn comparison(&mut self) -> Result<Box<dyn Expr>, SyntaxError> {
         let left = self.term()?;
 
         while self.try_match(&[Greater, GreaterEqual, Less, LessEqual]) {
@@ -47,7 +47,7 @@ impl Parser {
         Ok(left)
     }
 
-    fn term(&mut self) -> Result<Box<dyn Expr>, LoxError> {
+    fn term(&mut self) -> Result<Box<dyn Expr>, SyntaxError> {
         let left = self.factor()?;
 
         while self.try_match(&[Minus, Plus]) {
@@ -59,7 +59,7 @@ impl Parser {
         Ok(left)
     }
 
-    fn factor(&mut self) -> Result<Box<dyn Expr>, LoxError> {
+    fn factor(&mut self) -> Result<Box<dyn Expr>, SyntaxError> {
         let left = self.unary()?;
 
         while self.try_match(&[Slash, Star]) {
@@ -71,7 +71,7 @@ impl Parser {
         Ok(left)
     }
 
-    fn unary(&mut self) -> Result<Box<dyn Expr>, LoxError> {
+    fn unary(&mut self) -> Result<Box<dyn Expr>, SyntaxError> {
         if self.try_match(&[Bang, Minus]) {
             let operator = self.previous().unwrap().clone();
             let right = self.unary()?;
@@ -81,7 +81,7 @@ impl Parser {
         return self.primary();
     }
 
-    fn primary(&mut self) -> Result<Box<dyn Expr>, LoxError> {
+    fn primary(&mut self) -> Result<Box<dyn Expr>, SyntaxError> {
         if self.try_match(&[False]) {
             return Ok(LiteralExpr::new(Object::False));
         }
@@ -133,12 +133,12 @@ impl Parser {
         self.tokens.get(self.current - 1)
     }
 
-    fn consume(&mut self, typ: &TokenType, message: &str) -> Result<Option<&Token>, LoxError> {
+    fn consume(&mut self, typ: &TokenType, message: &str) -> Result<Option<&Token>, SyntaxError> {
         if self.check(typ) {
             return Ok(self.advance());
         } else {
             let p = self.peek();
-            Err(LoxError::error(p.unwrap().line, message.to_string()))
+            Err(SyntaxError::new(p.unwrap().line, message.to_string()))
         }
     }
 

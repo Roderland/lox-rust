@@ -1,4 +1,5 @@
 use std::fmt::{self, Formatter};
+use crate::object::Object;
 
 #[derive(Debug, Clone)]
 pub struct Token {
@@ -32,27 +33,6 @@ impl fmt::Display for Token {
                 "None".to_string()
             }
         )
-    }
-}
-
-#[derive(Debug, Clone)]
-pub enum Object {
-    Num(f64),
-    Str(String),
-    Nil,
-    True,
-    False,
-}
-
-impl fmt::Display for Object {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        match self {
-            Object::Num(x) => write!(f, "{x}"),
-            Object::Str(x) => write!(f, "\"{x}\""),
-            Object::Nil => write!(f, "nil"),
-            Object::True => write!(f, "true"),
-            Object::False => write!(f, "false"),
-        }
     }
 }
 

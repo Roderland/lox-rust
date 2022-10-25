@@ -1,5 +1,6 @@
-use crate::token::{Object, Token, TokenType};
-use crate::LoxError;
+use crate::token::{Token, TokenType};
+use crate::{SyntaxError};
+use crate::object::Object;
 
 pub struct Scanner {
     source: Vec<char>,
@@ -20,14 +21,14 @@ impl Scanner {
         }
     }
 
-    pub fn scan_tokens(&mut self) -> Result<&Vec<Token>, LoxError> {
-        let mut had_error: Option<LoxError> = None;
+    pub fn scan_tokens(&mut self) -> Result<&Vec<Token>, SyntaxError> {
+        let mut had_error: Option<SyntaxError> = None;
         while !self.is_at_end() {
             self.start = self.current;
             match self.scan_token() {
                 Ok(_) => {}
                 Err(e) => {
-                    e.report("");
+                    //e.report("");
                     had_error = Some(e);
                 }
             }
@@ -41,7 +42,7 @@ impl Scanner {
         }
     }
 
-    fn scan_token(&mut self) -> Result<(), LoxError> {
+    fn scan_token(&mut self) -> Result<(), SyntaxError> {
         let c = self.advance();
         match c {
             '(' => self.add_token(TokenType::LeftParen),
@@ -109,7 +110,7 @@ impl Scanner {
                 } else if Scanner::is_alpha(Some(c)) {
                     self.identifier();
                 } else {
-                    return Err(LoxError::error(
+                    return Err(SyntaxError::new(
                         self.line,
                         "Unexpected character".to_string(),
                     ));
@@ -119,7 +120,7 @@ impl Scanner {
         Ok(())
     }
 
-    fn string(&mut self) -> Result<(), LoxError> {
+    fn string(&mut self) -> Result<(), SyntaxError> {
         loop {
             match self.peek() {
                 Some('"') => break,
@@ -130,7 +131,7 @@ impl Scanner {
                     self.advance();
                 }
                 None => {
-                    return Err(LoxError::error(
+                    return Err(SyntaxError::new(
                         self.line,
                         "Unterminated string".to_string(),
                     ));
